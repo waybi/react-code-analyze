@@ -1936,6 +1936,7 @@ let isUnbatchingUpdates: boolean = false;
 
 let completedBatches: Array<Batch> | null = null;
 
+// react开始执行的时间
 let originalStartTimeMs: number = now();
 let currentRendererTime: ExpirationTime = msToExpirationTime(
   originalStartTimeMs,
@@ -1948,6 +1949,7 @@ let nestedUpdateCount: number = 0;
 let lastCommittedRootDuringThisBatch: FiberRoot | null = null;
 
 function recomputeCurrentRendererTime() {
+  // 现在离 React 应用初始化时经过了多少时间
   const currentTimeMs = now() - originalStartTimeMs;
   currentRendererTime = msToExpirationTime(currentTimeMs);
 }

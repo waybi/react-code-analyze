@@ -153,7 +153,11 @@ function scheduleRootUpdate(
   }
 
   flushPassiveEffects();
+
+  // 加入队列
   enqueueUpdate(current, update);
+
+  // 任务调度
   scheduleWork(current, expirationTime);
 
   return expirationTime;

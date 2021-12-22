@@ -1755,7 +1755,7 @@ function retryTimedOutBoundary(boundaryFiber: Fiber, thenable: Thenable) {
   }
 }
 
-function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
+function  scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
   recordScheduleUpdate();
 
   if (__DEV__) {
@@ -1770,6 +1770,8 @@ function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
   if (fiber.expirationTime < expirationTime) {
     fiber.expirationTime = expirationTime;
   }
+
+  // alternate是fiber的克隆对象??
   let alternate = fiber.alternate;
   if (alternate !== null && alternate.expirationTime < expirationTime) {
     alternate.expirationTime = expirationTime;
@@ -1911,11 +1913,13 @@ function scheduleWork(fiber: Fiber, expirationTime: ExpirationTime) {
   if (
     // If we're in the render phase, we don't need to schedule this root
     // for an update, because we'll do it before we exit...
+    // isWorking 包含isCommitting，isCommitting是不可打断阶段
     !isWorking ||
     isCommitting ||
     // ...unless this is a different root than the one we're rendering.
     nextRoot !== root
   ) {
+    // 此处使用root.expirationTime而不是传进来的expirationTime，因为markPendingPriorityLevel调用完后，expirationTime有可能不一样
     const rootExpirationTime = root.expirationTime;
     requestWork(root, rootExpirationTime);
   }
@@ -2147,13 +2151,16 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
 function addRootToSchedule(root: FiberRoot, expirationTime: ExpirationTime) {
   // Add the root to the schedule.
   // Check if this root is already part of the schedule.
+  // root没有进入过调度，数据结构是单向链表
   if (root.nextScheduledRoot === null) {
     // This root is not already scheduled. Add it.
     root.expirationTime = expirationTime;
     if (lastScheduledRoot === null) {
+      // 只有一个root的情况,如果有多个root会形成链表的结构
       firstScheduledRoot = lastScheduledRoot = root;
       root.nextScheduledRoot = root;
     } else {
+      // 把root插入链表末尾
       lastScheduledRoot.nextScheduledRoot = root;
       lastScheduledRoot = root;
       lastScheduledRoot.nextScheduledRoot = firstScheduledRoot;

@@ -10,6 +10,7 @@ import ForwardRefDemo from './demos/forward-ref'
 import ChildrenDemo from './demos/children'
 import MemoDemo from './demos/memo'
 import PortalDemo from './demos/portal'
+import BatchedUpdatesDemo from './demos/batchedUpdates'
 
 export default (
   <>
@@ -22,5 +23,6 @@ export default (
     <Route path="/children" component={ChildrenDemo} />
     <Route path="/memo" render={() => <MemoDemo />} />
     <Route path="/portal" render={() => <PortalDemo />} />
+    <Route path="/batchedUpdates" render={() => <BatchedUpdatesDemo />} />
   </>
 )

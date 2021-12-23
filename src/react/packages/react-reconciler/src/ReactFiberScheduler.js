@@ -2128,6 +2128,10 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
     return;
   }
 
+  /**
+   * 如果调用多次setState，isBatchingUpdates为true, isUnbatchingUpdates为false
+   * 直接return没有进入调度也就是不更新
+   */
   if (isBatchingUpdates) {
     // Flush work at the end of the batch.
     if (isUnbatchingUpdates) {
@@ -2524,6 +2528,7 @@ function onUncaughtError(error: mixed) {
 // TODO: Batching should be implemented at the renderer level, not inside
 // the reconciler.
 function batchedUpdates<A, R>(fn: (a: A) => R, a: A): R {
+  debugger
   const previousIsBatchingUpdates = isBatchingUpdates;
   isBatchingUpdates = true;
   try {

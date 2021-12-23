@@ -17,6 +17,7 @@ class App extends Component {
           <Link to="/children">ChildrenDemo</Link>
           <Link to="/memo">MemoDemo</Link>
           <Link to="/portal">PortalDemo</Link>
+          <Link to="/batchedUpdates">批量更新</Link>
         </nav>
         <div className="contents">{routes}</div>
       </div>

@@ -315,6 +315,7 @@ function unstable_wrapCallback(callback) {
 }
 
 function unstable_scheduleCallback(callback, deprecated_options) {
+  // startTime就是Performance.now()
   var startTime =
     currentEventStartTime !== -1 ? currentEventStartTime : getCurrentTime();
 
@@ -357,6 +358,7 @@ function unstable_scheduleCallback(callback, deprecated_options) {
   // Insert the new callback into the list, ordered first by expiration, then
   // by insertion. So the new callback is inserted any other callback with
   // equal expiration.
+  // firstCallbackNode 当前正在执行callback
   if (firstCallbackNode === null) {
     // This is the first callback in the list.
     firstCallbackNode = newNode.next = newNode.previous = newNode;
@@ -365,7 +367,8 @@ function unstable_scheduleCallback(callback, deprecated_options) {
     var next = null;
     var node = firstCallbackNode;
     do {
-      if (node.expirationTime > expirationTime) {
+      // 优先级更高（也就是过期时间更短）的会排在前面
+      if (node.expirationTime > newNode.expirationTime) {
         // The new callback expires before this one.
         next = node;
         break;
@@ -376,6 +379,7 @@ function unstable_scheduleCallback(callback, deprecated_options) {
     if (next === null) {
       // No callback with a later expiration was found, which means the new
       // callback has the latest expiration in the list.
+      // newNode.expirationTime要比node.expirationTime大，插在链表最后，也就是下一个要执行callback就是newNode，目前执行流程不会变
       next = firstCallbackNode;
     } else if (next === firstCallbackNode) {
       // The new callback has the earliest expiration in the entire list.
@@ -532,7 +536,7 @@ if (globalValue && globalValue._schedMock) {
   typeof window === 'undefined' ||
   // Check if MessageChannel is supported, too.
   typeof MessageChannel !== 'function'
-) {
+)  {
   // If this accidentally gets imported in a non-browser environment, e.g. JavaScriptCore,
   // fallback to a naive implementation.
   var _callback = null;
@@ -690,6 +694,7 @@ if (globalValue && globalValue._schedMock) {
   };
 
   requestHostCallback = function(callback, absoluteTimeout) {
+    // callback = flushWork
     scheduledHostCallback = callback;
     timeoutTime = absoluteTimeout;
     if (isFlushingHostCallback || absoluteTimeout < 0) {

@@ -1991,12 +1991,15 @@ function scheduleCallbackWithExpirationTime(
   root: FiberRoot,
   expirationTime: ExpirationTime,
 ) {
+  // 代表已经有一个callback在执行
   if (callbackExpirationTime !== NoWork) {
     // A callback is already scheduled. Check its expiration time (timeout).
+    // 当前优先级更低
     if (expirationTime < callbackExpirationTime) {
       // Existing callback has sufficient timeout. Exit.
       return;
     } else {
+      // 如果当前expirationTime的优先级更高, 把原来的调度取消掉
       if (callbackID !== null) {
         // Existing callback has insufficient timeout. Cancel and schedule a
         // new one.
@@ -2010,6 +2013,7 @@ function scheduleCallbackWithExpirationTime(
 
   callbackExpirationTime = expirationTime;
   const currentMs = now() - originalStartTimeMs;
+  // expirationTimeMs代表将来某个时间点这个任务就应该过期
   const expirationTimeMs = expirationTimeToMs(expirationTime);
   const timeout = expirationTimeMs - currentMs;
   callbackID = scheduleDeferredCallback(performAsyncWork, {timeout});
@@ -2528,7 +2532,6 @@ function onUncaughtError(error: mixed) {
 // TODO: Batching should be implemented at the renderer level, not inside
 // the reconciler.
 function batchedUpdates<A, R>(fn: (a: A) => R, a: A): R {
-  debugger
   const previousIsBatchingUpdates = isBatchingUpdates;
   isBatchingUpdates = true;
   try {

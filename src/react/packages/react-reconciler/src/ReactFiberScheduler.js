@@ -2149,6 +2149,9 @@ function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
   }
 
   // TODO: Get rid of Sync and use current time?
+  console.log('expirationTime>>>', expirationTime)
+  console.log('Sync>>>', Sync)
+  console.log('expirationTime === Sync>>>', expirationTime === Sync)
   if (expirationTime === Sync) {
     performSyncWork();
   } else {

@@ -8,6 +8,7 @@ class App extends Component {
     return (
       <div className="App">
         <nav className="navs">
+          <Link to="/scheduler">Scheduler</Link>
           <Link to="/ref">RefDemo</Link>
           <Link to="/forward-ref">ForwardRefDemo</Link>
           <Link to="/context">ContextDemo</Link>

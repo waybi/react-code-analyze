@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 
+import SchedulerDemo from './demos/SchedulerDemo'
 import RefDeom from './demos/ref'
 import ContextDemo from './demos/context'
 import ConcurrentModeDemo from './demos/concurrent-mode'
@@ -14,6 +15,7 @@ import BatchedUpdatesDemo from './demos/batchedUpdates'
 
 export default (
   <>
+    <Route path="/scheduler" component={SchedulerDemo} />
     <Route path="/ref" component={RefDeom} />
     <Route path="/forward-ref" component={ForwardRefDemo} />
     <Route path="/context" component={ContextDemo} />
